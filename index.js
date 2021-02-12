@@ -16,7 +16,7 @@ const client = new discord.Client();
 client.commands = new discord.Collection();
 
 
-client.login(botConfig.token);
+client.login(process.env.token);
 
 var con = mysql.createConnection({
     host: database.host,
@@ -79,7 +79,7 @@ client.on("guildMemberAdd", member => {
     });
 
 
-    var channel = member.guild.channels.cache.get('708335622443630624');
+    var channel = member.guild.channels.cache.get('809739422190272542');
 
     if (!channel) return;
 
@@ -99,7 +99,7 @@ client.on("guildMemberAdd", member => {
 
 client.on("guildMemberRemove", member => {
 
-    var channel = member.guild.channels.cache.get('708335622443630624');
+    var channel = member.guild.channels.cache.get('809739422190272542');
 
     if (!channel) return;
 
@@ -118,7 +118,7 @@ client.on("ready", async () => {
 
     console.log(`${client.user.username} is online.`);
 
-    client.user.setActivity("Testing", { type: "PLAYING" });
+    client.user.setActivity("You :)", { type: "WATCHING" });
 
 });
 
