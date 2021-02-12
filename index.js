@@ -16,7 +16,7 @@ const client = new discord.Client();
 client.commands = new discord.Collection();
 
 
-client.login(botConfig.token);
+client.login(process.env.token);
 
 var con = mysql.createConnection({
     host: database.host,
