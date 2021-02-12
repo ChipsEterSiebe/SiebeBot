@@ -13,7 +13,7 @@ const client = new discord.Client();
 
 
 //  Command handler
-client.commands = new discord.Collection(); l
+client.commands = new discord.Collection(); 
 
 
 client.login(process.env.token);

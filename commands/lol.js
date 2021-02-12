@@ -10,3 +10,4 @@ module.exports.help = {
     name: "lol",
     description: "Geeft al de verschillende commands",
     category: "Informatie"
+}
