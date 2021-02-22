@@ -16,7 +16,7 @@ const client = new discord.Client();
 client.commands = new discord.Collection(); 
 
 
-client.login(process.env.token);
+client.login(botConfig.token);
 
 var con = mysql.createConnection({
     host: database.host,
@@ -118,7 +118,7 @@ client.on("ready", async () => {
 
     console.log(`${client.user.username} is online.`);
 
-    client.user.setActivity("You :)", { type: "WATCHING" });
+    client.user.setActivity("Siebe zijn kamer :P", { type: "WATCHING" });
 
 });
 
