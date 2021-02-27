@@ -17,6 +17,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "discord.js": "^12.2.0",
+    "download": "^8.0.0",
     "ms": "^2.1.2",
     "mysql": "^2.18.1",
     "yt-search": "^2.1.8",

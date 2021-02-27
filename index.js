@@ -114,13 +114,29 @@ client.on("guildMemberRemove", member => {
 });
 
 
-client.on("ready", async () => {
 
-    console.log(`${client.user.username} is online.`);
 
-    client.user.setActivity("Siebe zijn kamer :P", { type: "WATCHING" });
+    const activities_list = [
+        "Siebe zijn kamer :P", 
+        "!help",
+        "PornHub", 
+        "Siebe",
+        "MageMC",
+        "BrokeMT",
+        "Chilling",
+        "Lovers",
+        "Random shit",
+        "Youtube"
+        ]; // creates an arraylist containing phrases you want your bot to switch through.
+    
+        client.on('ready', () => {
+            setInterval(() => {
+                const index = Math.floor(Math.random() * (activities_list.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
+                client.user.setActivity(activities_list[index], { type: 'WATCHING' }); // sets bot's activities to one of the phrases in the arraylist.
+            }, 4000); // Runs this every 10 seconds.
+    });
 
-});
+
 
 client.on("messageDelete", messageDeleted => {
 
