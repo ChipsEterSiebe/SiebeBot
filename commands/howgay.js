@@ -1,15 +1,4 @@
-const discord = require("discord.js");
-const human = require('humanize');
-
-module.exports.run = async (client, message, args) => {
-
-    let time = new Date();
-    function amPm() {
-      if (time.getHours() >= 11) {
-        return "PM";
-      } else return "AM";
-    }
-
+module.exports.run = async (bot, message, args, ops) => {
     var procent = Math.floor(Math.random() * Math.floor(101));
 
 
@@ -20,13 +9,11 @@ module.exports.run = async (client, message, args) => {
     var embed = new discord.MessageEmbed()
         .setTitle(`:rainbow: | How Gay`)
         .setDescription(`Hoe gay is ${gayUser}?\n\nHij/zij is ` + procent + `% gay!`)
-        .setColor("#FF7F00")
-        .setFooter(`${human.date('m-d-y | h:i:s', new Date())} ${amPm()}`)
+        .setColor("#00FF00")
     message.channel.send(embed);
 }
 
 module.exports.help = {
     name: "howgay",
-    description: "Hoe gay ben jij?",
-    category: 'Fun'
+    description: "Hoe gay ben jij?"
 }
