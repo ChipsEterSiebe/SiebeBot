@@ -29,7 +29,9 @@ module.exports.run = async (client, message, args) => {
         .setTimestamp()
         .setDescription(`** Gekickt:** ${kickUser} (${kickUser.id})
             **Gekickt door:** ${message.author}
-            **Redenen: ** ${reason}`);
+            **Redenen: ** ${reason}`)
+        .setFooter(`By ${customisation.ownername}`);
+        
 
     var embedPrompt = new discord.MessageEmbed()
         .setColor("GREEN")
@@ -99,5 +101,8 @@ async function promptMessage(message, author, time, reactions) {
 }
 
 module.exports.help = {
-    name: "kick"
+    name: "kick",
+    description: "Kicked iemand",
+    category: 'Moderatie'
+
 }

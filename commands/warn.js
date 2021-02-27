@@ -1,67 +1,88 @@
-const discord = require("discord.js");
+const Discord = require('discord.js');
 const fs = require("fs");
-const warns = JSON.parse(fs.readFileSync("./warnings.json", "utf8"));
+const ms = require("ms");
+//const mysql = require('mysql');
+//const file = require('../mysql.json');
+const customisation = require('../customisation.json');
 
-module.exports.run = async (client, message, args) => {
+exports.run = async (client, message, args) => {
+  let reason = args.slice(1).join(' ');
+  let user = message.mentions.users.first();
+  let warns = JSON.parse(fs.readFileSync("./warnings.json", "utf8"));
+  //let logchannel = message.guild.channels.cache.find(x => x.name = 'logs');
+  if (!message.member.hasPermission("KICK_MEMBERS")) return message.reply("❌**Error:** Je hebt geen **Kick Members** Permissie!");
+  if (message.mentions.users.size < 1) return message.reply('Je moet iemand taggen om te warnen.').catch(console.error);
+  if (message.mentions.users.first().id === message.author.id) return message.reply('Ik kan je dat niet laten doen, Zelf beschadiging is slecht:facepalm:');
+  if (message.mentions.users.first().id === "365099695992864788") return message.reply("Jij kan niet mijn developer warnen:wink:");
+  //if (!logchannel) return message.channel.send('I cannot find a logs channel');
+  if (reason.length < 1) reason = 'Geen reden opgegeven.';
+  
+  if(!warns[`${user.id}, ${message.guild.id}`]) warns[`${user.id}, ${message.guild.id}`] = {
+    warns: 0
+  };
 
-    // !warn spelerNaam redenen hier.
+  warns[`${user.id}, ${message.guild.id}`].warns++;
 
-    if (!message.member.hasPermission("KICK_MEMBERS")) return message.reply("sorry jij kan dit niet");
+  fs.writeFile("./warnings.json", JSON.stringify(warns), err => {
+    if(err) throw err;
+  });
 
-    if (!args[0]) return message.reply("Geen gebruiker opgegeven.");
+  const embed = new Discord.MessageEmbed()
+  .setColor(0xFFFF00)
+  .setTimestamp()
+  .addField('Actie:', 'Warning')
+  .addField('Gebruiker:', `${user.username}#${user.discriminator}`)
+  .addField('Warned bij:', `${message.author.username}#${message.author.discriminator}`)
+  .addField('Aantal warnings:', warns[`${user.id}, ${message.guild.id}`].warns)
+  .addField('Reden', reason)
+  .setFooter(`By ${customisation.ownername}`);
+  let logchannel = message.guild.channels.cache.find(x => x.name = 'logs');
+  if  (!logchannel){
+    message.channel.send({embed})
+  }else{
+    client.channels.cache.get(logchannel.id).send({embed});
+    message.channel.send({embed})
+  }
+  if(user.bot) return;
+  message.mentions.users.first().send({embed}).catch(e =>{
+    if(e) return 
+  });
 
-    if (!args[1]) return message.reply("Gelieve een redenen op te geven.");
 
-    if (!message.guild.me.hasPermission("KICK_MEMBERS")) return message.reply("Geen perms");
+  if(warns[`${user.id}, ${message.guild.id}`].warns == 2){
+    let muteRole = message.guild.roles.find('naam', 'Muted')
 
-    var warnUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    let mutetime = "60s";
+    message.guild.members.get(user.id).addRole(muteRole.id);
+    message.reply(`${user.tag} Is tijdelijk gemute`);
 
-    var reason = args.slice(1).join(" ");
+    setTimeout(function(){
+      message.guild.members.get(user.id).removeRole(muteRole.id)
+    }, ms(mutetime))
+  }
 
-    if (!warnUser) return message.reply("Kan de gebruiker niet vinden.");
+  if(warns[`${user.id}, ${message.guild.id}`].warns == 3){
+    message.guild.member(user).kick(reason);
+    message.reply('Die sukkel is gekicked :facepalm:')
+  }
 
-    if (warnUser.hasPermission("MANAGE_MESSAGES")) return message.reply("Sorry je kunt deze gebruiker niet warnen");
+  if(warns[`${user.id}, ${message.guild.id}`].warns == 5){
+    message.guild.member(user).ban(reason);
+    message.reply('Jij hoeft je geen zorgen te maken over die oetlul, ik heb hem verbannen!');
+  }
 
-    if (!warns[warnUser.id]) warns[warnUser.id] = {
-        warns: 0
-    };
+};
 
-    warns[warnUser.id].warns++;
+exports.conf = {
+  enabled: true,
+  guildOnly: false,
+  aliases: ["smolyeet"],
+  permLevel: 0
+};
 
-    fs.writeFile("./warnings.json", JSON.stringify(warns), (err) => {
-        if (err) console.log(err);
-    });
-
-    var embed = new discord.MessageEmbed()
-        .setColor("#ff0000")
-        .setFooter(message.member.displayName, message.author.displayAvatarURL)
-        .setTimestamp()
-        .setDescription(`**Gewarnd:** ${warnUser} (${warnUser.id})
-        **Warning door:** ${message.author}
-        **Redenen: ** ${reason}`)
-        .addField("Aantal warns", warns[warnUser.id].warns);
-
-    var channel = message.member.guild.channels.cache.get("498068972604882945");
-
-    if (!channel) return;
-
-    channel.send(embed);
-
-    if (warns[warnUser.id].warns == 3) {
-
-        var embed = new discord.MessageEmbed()
-            .setColor("#ff0000")
-            .setDescription("PAS OP")
-            .addField("Bericht", "Je hebt nog een waarschuwing voor een ban.");
-
-        message.channel.send(embed);
-
-    } else if (warns[warnUser.id].warns == 4) {
-        message.guild.member(warnUser).ban(reason);
-        message.channel.send(`${warnUser} is verbannen door de bot wegens te veel warns`);
-    }
-}
-
-module.exports.help = {
-    name: "warn"
-}
+exports.help = {
+  name: 'warn',
+  description: 'Geeft een warn aan de gebruiker.',
+  usage: 'warn [mention] [reason]',
+  category: 'Moderatie'
+};
