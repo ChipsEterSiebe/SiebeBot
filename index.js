@@ -19,10 +19,6 @@ client.commands = new discord.Collection();
 client.login(process.env.token);
 
 
-
-
-
-
 //  Command handler
 fs.readdir("./commands/", (err, files) => {
 
