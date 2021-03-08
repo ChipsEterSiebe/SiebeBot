@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
     
 
 module.exports.help = {
-    name: "lol",
-    description: "Geeft al de verschillende commands",
-    category: "Informatie"
+    name: "MageMC",
+    description: "MageMC link",
+    category: "MageMC"
 }
