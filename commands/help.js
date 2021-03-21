@@ -31,6 +31,7 @@ module.exports.run = async (client, message, args) => {
     });
 
     var response = "**Bot commands**\n\n";
+    var magemc = "**__MageMC__**\n";
     var general = "**__Algemeen__**\n";
     var info = "\n**__Informatie__**\n";
     var moderatie = "\n**__Moderatie__**\n";
@@ -39,7 +40,11 @@ module.exports.run = async (client, message, args) => {
     for (let i = 0; i < commandList.length; i++) {
         const command = commandList[i];
 
-        if (command["category"] == "Algemeen") {
+        if (command["category"] == "MageMC") {
+
+            general += `${prefix}${command["name"]} - ${command["description"]}\n`;
+
+        } else if (command["category"] == "Algemeen") {
 
             general += `${prefix}${command["name"]} - ${command["description"]}\n`;
 
@@ -62,12 +67,13 @@ module.exports.run = async (client, message, args) => {
         } 
 
     }
-
+    response += magemc;
     response += general;
     response += info;
     response += moderatie;
     response += fun;
     response += tickets;
+    
 
     message.author.send(response).then(() => {
         message.channel.send("Alle commands staan in je privé berichten! :mailbox_with_mail:");
